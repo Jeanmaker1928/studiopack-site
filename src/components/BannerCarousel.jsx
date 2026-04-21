@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 
@@ -37,17 +37,36 @@ const banners = [
   }
 ];
 
+const INTERVAL_MS = 6000;
+
 const BannerCarousel = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const intervalRef = useRef(null);
+
+  const resetInterval = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (!emblaApi) return;
+    intervalRef.current = setInterval(() => emblaApi.scrollNext(), INTERVAL_MS);
+  }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     emblaApi.on('select', onSelect);
-    const interval = setInterval(() => emblaApi.scrollNext(), 5000);
-    return () => { emblaApi.off('select', onSelect); clearInterval(interval); };
-  }, [emblaApi]);
+    // Reseta o timer também quando o usuário solta após arrastar
+    emblaApi.on('pointerUp', resetInterval);
+    resetInterval();
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('pointerUp', resetInterval);
+      clearInterval(intervalRef.current);
+    };
+  }, [emblaApi, resetInterval]);
+
+  const handlePrev = () => { emblaApi?.scrollPrev(); resetInterval(); };
+  const handleNext = () => { emblaApi?.scrollNext(); resetInterval(); };
+  const handleDot = (index) => { emblaApi?.scrollTo(index); resetInterval(); };
 
   return (
     <div className="relative w-full max-w-[1600px] mx-auto">
@@ -76,15 +95,15 @@ const BannerCarousel = () => {
       </div>
 
       {/* Arrows */}
-      <button 
-        onClick={() => emblaApi && emblaApi.scrollPrev()}
+      <button
+        onClick={handlePrev}
         className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 hidden md:flex items-center justify-center text-white backdrop-blur-sm transition-all"
         aria-label="Anterior"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
       </button>
-      <button 
-        onClick={() => emblaApi && emblaApi.scrollNext()}
+      <button
+        onClick={handleNext}
         className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 hidden md:flex items-center justify-center text-white backdrop-blur-sm transition-all"
         aria-label="Próxima"
       >
@@ -96,7 +115,7 @@ const BannerCarousel = () => {
         {banners.map((_, index) => (
           <button
             key={index}
-            onClick={() => emblaApi && emblaApi.scrollTo(index)}
+            onClick={() => handleDot(index)}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
               index === selectedIndex ? 'bg-primary scale-125' : 'bg-white/50 hover:bg-white/80'
             }`}

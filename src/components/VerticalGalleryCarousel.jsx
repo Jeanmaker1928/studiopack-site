@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 const ZOOM = 3;
-const CIRCLE_RADIUS = 150; // px — raio do círculo de zoom mobile
+const CIRCLE_RADIUS = 60; // px — raio do círculo de zoom mobile
 
 const calcBgPos = (pct) => {
   // Centraliza o ponto exato do cursor no círculo de zoom
@@ -40,23 +40,13 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
     if (!el) return;
     const rect = el.getBoundingClientRect();
 
-    const touchX = touch.clientX - rect.left;
-    const touchY = touch.clientY - rect.top;
-    const w = rect.width;
-    const h = rect.height;
-
-    const xPct = Math.max(0, Math.min(100, (touchX / w) * 100));
-    const yPct = Math.max(0, Math.min(100, (touchY / h) * 100));
-
-    // Posiciona o círculo acima do dedo, mantendo dentro do container
-    const diameter = CIRCLE_RADIUS * 2;
-    const gap = 20;
-    let cx = Math.max(CIRCLE_RADIUS, Math.min(w - CIRCLE_RADIUS, touchX));
-    let cy = Math.max(CIRCLE_RADIUS, Math.min(h - CIRCLE_RADIUS, touchY - diameter - gap));
+    const xPct = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
+    const yPct = Math.max(0, Math.min(100, ((touch.clientY - rect.top) / rect.height) * 100));
 
     setMobileZoom({
-      left: cx - CIRCLE_RADIUS,
-      top: cy - CIRCLE_RADIUS,
+      // fixed position: círculo acima do dedo, pode sair do container
+      clientX: touch.clientX,
+      clientY: touch.clientY,
       bgX: calcBgPos(xPct),
       bgY: calcBgPos(yPct),
     });
@@ -100,15 +90,15 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
           />
           <div className="absolute inset-0 halftone-overlay opacity-30 pointer-events-none" />
 
-          {/* Círculo de zoom mobile — flutua acima do dedo */}
+          {/* Círculo de zoom mobile — fixed no viewport, acima do dedo */}
           {mobileZoom && (
             <div
-              className="absolute z-30 rounded-full overflow-hidden border-4 border-primary/70 shadow-2xl pointer-events-none"
+              className="fixed z-50 rounded-full overflow-hidden border-4 border-primary/70 shadow-2xl pointer-events-none"
               style={{
                 width: CIRCLE_RADIUS * 2,
                 height: CIRCLE_RADIUS * 2,
-                left: mobileZoom.left,
-                top: mobileZoom.top,
+                left: mobileZoom.clientX - CIRCLE_RADIUS,
+                top: mobileZoom.clientY - CIRCLE_RADIUS * 2 - 24,
                 backgroundImage: `url(${images[currentIndex]})`,
                 backgroundSize: `${ZOOM * 100}%`,
                 backgroundPosition: `${mobileZoom.bgX}% ${mobileZoom.bgY}%`,
