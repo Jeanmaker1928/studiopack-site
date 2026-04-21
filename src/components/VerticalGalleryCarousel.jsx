@@ -1,26 +1,43 @@
 import React, { useState } from 'react';
 
 const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onIndexChange, onHover }) => {
-  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchStart, setTouchStart] = useState(null);
 
   const nextImage = () => onIndexChange((currentIndex + 1) % images.length);
   const prevImage = () => onIndexChange((currentIndex - 1 + images.length) % images.length);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
     onHover?.(true, x, y);
   };
 
   const handleMouseLeave = () => onHover?.(false, 50, 50);
 
-  const handleTouchStart = (e) => setTouchStartX(e.touches[0].clientX);
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!touchStart) return;
+    const touch = e.touches[0];
+    const diffX = Math.abs(touch.clientX - touchStart.x);
+    if (diffX < 40) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
+      const y = Math.max(0, Math.min(100, ((touch.clientY - rect.top) / rect.height) * 100));
+      onHover?.(true, x, y);
+    }
+  };
+
   const handleTouchEnd = (e) => {
-    if (touchStartX === null) return;
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) diff > 0 ? nextImage() : prevImage();
-    setTouchStartX(null);
+    onHover?.(false, 50, 50);
+    if (!touchStart) return;
+    const diffX = touchStart.x - e.changedTouches[0].clientX;
+    if (Math.abs(diffX) > 50) diffX > 0 ? nextImage() : prevImage();
+    setTouchStart(null);
   };
 
   return (
@@ -35,6 +52,7 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
           <img

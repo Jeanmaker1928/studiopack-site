@@ -70,14 +70,22 @@ const PackDetailPage = () => {
                     transition={{ duration: 0.25 }}
                     className="absolute inset-0 flex items-center justify-center pointer-events-none"
                   >
-                    <div
-                      className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary/60 shadow-2xl shadow-primary/20"
-                      style={{
-                        backgroundImage: `url(${displayImages[currentIndex]})`,
-                        backgroundSize: '300%',
-                        backgroundPosition: `${mousePos.x}% ${mousePos.y}%`,
-                      }}
-                    />
+                    {(() => {
+                      const zoom = 3;
+                      const bgX = ((mousePos.x / 100 - 1 / (2 * zoom)) / (1 - 1 / zoom)) * 100;
+                      const bgY = ((mousePos.y / 100 - 1 / (2 * zoom)) / (1 - 1 / zoom)) * 100;
+                      return (
+                        <div
+                          className="w-80 h-80 md:w-[26rem] md:h-[26rem] rounded-full overflow-hidden border-4 border-primary/60 shadow-2xl shadow-primary/20"
+                          style={{
+                            backgroundImage: `url(${displayImages[currentIndex]})`,
+                            backgroundSize: `${zoom * 100}%`,
+                            backgroundPosition: `${bgX}% ${bgY}%`,
+                            backgroundColor: 'black',
+                          }}
+                        />
+                      );
+                    })()}
                   </motion.div>
                 ) : (
                   <motion.div
