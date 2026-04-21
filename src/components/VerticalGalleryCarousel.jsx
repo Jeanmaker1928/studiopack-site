@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const ZOOM = 3;
-const CIRCLE_RADIUS = 60; // px — raio do círculo de zoom mobile
+const ZOOM = 6;
+const CIRCLE_RADIUS = 80; // px — raio do círculo de zoom mobile
 
 const calcBgPos = (pct) => {
   // Centraliza o ponto exato do cursor no círculo de zoom
