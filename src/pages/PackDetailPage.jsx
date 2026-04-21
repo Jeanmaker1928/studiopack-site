@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
 import { getPackBySlug, packSpecificContent } from '@/data/PacksData';
 import Header from '@/components/Header';
@@ -11,9 +11,18 @@ const PackDetailPage = () => {
   const { slug } = useParams();
   const pack = getPackBySlug(slug);
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
   useEffect(() => {
     if (pack) window.scrollTo(0, 0);
   }, [pack]);
+
+  const handleHover = (hovering, x, y) => {
+    setIsHovering(hovering);
+    if (hovering) setMousePos({ x, y });
+  };
 
   if (!pack) {
     return (
@@ -47,67 +56,103 @@ const PackDetailPage = () => {
             <ArrowLeft size={16} />
             Voltar para Packs
           </Link>
-          
+
           <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
-            {/* Info */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="w-full md:w-1/2 flex flex-col order-2 md:order-1">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 uppercase tracking-tighter font-heading">
-                {pack.title}
-              </h1>
-              
-              <div className="mb-4 md:mb-6 flex flex-wrap gap-3">
-                <span className="bg-primary text-black font-bold px-4 py-1.5 rounded-full text-sm uppercase tracking-wide inline-flex items-center">
-                  {pack.artCount}
-                </span>
-                {!pack.isAvailable && (
-                  <span className="border border-[hsl(var(--muted-foreground)/0.3)] bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] font-semibold text-sm py-1.5 px-4 uppercase tracking-wider rounded-full">
-                    Em Breve
-                  </span>
-                )}
-              </div>
-
-              <p className="text-[hsl(var(--muted-foreground))] text-lg md:text-xl mb-10 md:mb-14 leading-relaxed">
-                {pack.description}
-              </p>
-
-              {/* Price & Buy */}
-              <div className="mb-2 md:mb-10 pb-6 md:pb-10 border-b border-primary/20">
-                <div className={`text-4xl md:text-5xl font-bold mb-6 md:mb-8 font-heading ${pack.isAvailable ? 'text-primary' : 'text-[hsl(var(--muted-foreground))]'}`}>
-                  {pack.price}
-                </div>
-                {pack.isAvailable ? (
-                  <button 
-                    className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg"
-                    onClick={() => window.open(pack.hotmartUrl, '_blank')}
+            {/* Info panel */}
+            <div className="w-full md:w-1/2 order-2 md:order-1 relative min-h-[400px]">
+              <AnimatePresence mode="wait">
+                {isHovering ? (
+                  <motion.div
+                    key="zoom"
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.85 }}
+                    transition={{ duration: 0.25 }}
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
                   >
-                    Comprar Agora
-                  </button>
+                    <div
+                      className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary/60 shadow-2xl shadow-primary/20"
+                      style={{
+                        backgroundImage: `url(${displayImages[currentIndex]})`,
+                        backgroundSize: '300%',
+                        backgroundPosition: `${mousePos.x}% ${mousePos.y}%`,
+                      }}
+                    />
+                  </motion.div>
                 ) : (
-                  <button disabled className="w-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg cursor-not-allowed rounded-lg">
-                    Disponível em Breve
-                  </button>
-                )}
-              </div>
+                  <motion.div
+                    key="info"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col"
+                  >
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 uppercase tracking-tighter font-heading">
+                      {pack.title}
+                    </h1>
 
-              {/* Benefits */}
-              {pack.benefits && pack.benefits.length > 0 && (
-                <div className="space-y-4 bg-[hsl(var(--secondary)/0.3)] p-5 md:p-6 rounded-xl border border-primary/10 mt-4">
-                  <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 font-heading">
-                    O que está incluído:
-                  </h3>
-                  {pack.benefits.map((benefit, idx) => (
-                    <div key={idx} className="flex items-start gap-3 text-[hsl(var(--muted-foreground))]">
-                      <CheckCircle2 className="text-primary h-5 w-5 flex-shrink-0 mt-0.5" />
-                      <span className="font-medium text-sm md:text-base">{benefit}</span>
+                    <div className="mb-4 md:mb-6 flex flex-wrap gap-3">
+                      <span className="bg-primary text-black font-bold px-4 py-1.5 rounded-full text-sm uppercase tracking-wide inline-flex items-center">
+                        {pack.artCount}
+                      </span>
+                      {!pack.isAvailable && (
+                        <span className="border border-[hsl(var(--muted-foreground)/0.3)] bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] font-semibold text-sm py-1.5 px-4 uppercase tracking-wider rounded-full">
+                          Em Breve
+                        </span>
+                      )}
                     </div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
+
+                    <p className="text-[hsl(var(--muted-foreground))] text-lg md:text-xl mb-10 md:mb-14 leading-relaxed">
+                      {pack.description}
+                    </p>
+
+                    <div className="mb-2 md:mb-10 pb-6 md:pb-10 border-b border-primary/20">
+                      <div className={`text-4xl md:text-5xl font-bold mb-6 md:mb-8 font-heading ${pack.isAvailable ? 'text-primary' : 'text-[hsl(var(--muted-foreground))]'}`}>
+                        {pack.price}
+                      </div>
+                      {pack.isAvailable ? (
+                        <button
+                          className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg"
+                          onClick={() => window.open(pack.hotmartUrl, '_blank')}
+                        >
+                          Comprar Agora
+                        </button>
+                      ) : (
+                        <button disabled className="w-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg cursor-not-allowed rounded-lg">
+                          Disponível em Breve
+                        </button>
+                      )}
+                    </div>
+
+                    {pack.benefits && pack.benefits.length > 0 && (
+                      <div className="space-y-4 bg-[hsl(var(--secondary)/0.3)] p-5 md:p-6 rounded-xl border border-primary/10 mt-4">
+                        <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 font-heading">
+                          O que está incluído:
+                        </h3>
+                        {pack.benefits.map((benefit, idx) => (
+                          <div key={idx} className="flex items-start gap-3 text-[hsl(var(--muted-foreground))]">
+                            <CheckCircle2 className="text-primary h-5 w-5 flex-shrink-0 mt-0.5" />
+                            <span className="font-medium text-sm md:text-base">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Gallery */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="w-full md:w-1/2 order-1 md:order-2">
-              <VerticalGalleryCarousel images={displayImages} title={pack.title} isAvailable={pack.isAvailable} />
+              <VerticalGalleryCarousel
+                images={displayImages}
+                title={pack.title}
+                isAvailable={pack.isAvailable}
+                currentIndex={currentIndex}
+                onIndexChange={setCurrentIndex}
+                onHover={handleHover}
+              />
             </motion.div>
           </div>
 
@@ -117,7 +162,7 @@ const PackDetailPage = () => {
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 uppercase tracking-tight font-heading">
                 Sobre este pack
               </h2>
-              
+
               <div className="mb-8 md:mb-12">
                 <h3 className="text-lg md:text-xl font-bold text-primary mb-4 leading-snug">
                   {content.title}
@@ -153,7 +198,7 @@ const PackDetailPage = () => {
                   <p className="text-base md:text-lg font-medium text-white text-center sm:text-left">
                     Pronto para começar? Clique em Comprar abaixo.
                   </p>
-                  <button 
+                  <button
                     className="bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all"
                     onClick={() => window.open(pack.hotmartUrl, '_blank')}
                   >
