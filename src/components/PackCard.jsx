@@ -31,7 +31,6 @@ const PackCard = ({ pack, showBuyButton = true }) => {
         </h3>
         <div className="flex items-center justify-center space-x-3 mb-4">
           <span className={`text-xs font-semibold px-3 py-1 rounded-full border ${isAvailable ? 'bg-primary/10 text-primary border-primary/30' : 'bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] border-[hsl(var(--muted-foreground)/0.3)]'}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1.5 -mt-0.5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="12" r="2"/><path d="m20 17-1.296-1.296a2.41 2.41 0 0 0-3.408 0L9 22"/></svg>
             {pack.artCount}
           </span>
         </div>

@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
-            <img src="https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/a645d29f3c459ac733eddfea1f4b01c1.png" alt="Studio Pack Logo" className="h-10 w-auto object-contain mb-6" />
+            <img src="/logo.png" alt="Studio Pack Logo" className="h-10 w-auto object-contain mb-6" />
             <p className="text-[hsl(var(--muted-foreground))] text-sm leading-relaxed max-w-xs">
               Packs de estampas halftone em alta qualidade para marcas e designers. Pronto para impressão, uso comercial incluído.
             </p>
@@ -37,7 +37,7 @@ const Footer = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                 </a>
                 <a href="https://wa.me/message/QHQX4MKSTS3LA1" target="_blank" rel="noopener noreferrer" className="text-[hsl(var(--muted-foreground))] hover:text-primary transition-colors duration-200 bg-[hsl(var(--secondary))] p-2 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9.5 9.5c.5 1 1.5 2.5 3 3.5 1.5 1 3 1.5 3.5 1.5"/></svg>
                 </a>
               </div>
             </div>

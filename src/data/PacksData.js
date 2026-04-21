@@ -5,20 +5,19 @@ export const packs = [
     title: 'LENDAS DO BASQUETE',
     description: 'Pack de estampas halftone com as maiores lendas do basquete. Artes com atitude e estilo para marcas de streetwear e produtos com pegada underground.',
     price: 'R$ 64,90',
-    artCount: '🏀 +80 artes',
-    coverImage: 'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/38627c878799d86deea8494aa25b0d14.jpg',
+    artCount: '+80 artes',
+    coverImage: '/packs/lendas-do-basquete/capa.jpg',
     galleryImages: [
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/89abea7063000e807b1cb479a0022eb5.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/c56d8d9976a08dea4f914b9b46acd751.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/966135f4c960c92972c4673b4cd4a8a0.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/b4f1896f949623fa1350384c614b1736.png'
+      '/packs/lendas-do-basquete/catalogo-1.png',
+      '/packs/lendas-do-basquete/catalogo-2.png',
+      '/packs/lendas-do-basquete/catalogo-3.png',
+      '/packs/lendas-do-basquete/catalogo-4.png'
     ],
     benefits: [
       'Alta qualidade (300 DPI)',
       'Designs exclusivos em Halftone',
       'Pronto para usar e estampar',
-      'Formatos PNG de alta resolução',
-      'Licença de uso comercial liberada'
+      'Formatos PNG de alta resolução'
     ],
     isAvailable: true,
     hotmartUrl: 'https://pay.hotmart.com/L105409360T?checkoutMode=10',
@@ -31,20 +30,18 @@ export const packs = [
     description: 'Pack de estampas halftone com as maiores lendas do rock n\' roll. Artes com atitude e estilo para marcas de streetwear e produtos com pegada underground.',
     price: 'R$ 64,90',
     artCount: '+80 artes',
-    coverImage: 'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/c5f52a8a01584609ce8fb6457a952d8e.png',
+    coverImage: '/packs/lendas-do-rock/capa.png',
     galleryImages: [
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/c5f52a8a01584609ce8fb6457a952d8e.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/51bc574cfbfa770108b2b662b5738288.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/7624e3ad042dec09d54408e03e4ff5f7.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/22e7ac4688f62cadb280d866e16f891f.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/505ddcd225011170ed3bd0f12a9ca4a6.png'
+      '/packs/lendas-do-rock/catalogo-1.png',
+      '/packs/lendas-do-rock/catalogo-2.png',
+      '/packs/lendas-do-rock/catalogo-3.png',
+      '/packs/lendas-do-rock/catalogo-4.png'
     ],
     benefits: [
       'Alta qualidade (300 DPI)',
       'Estética underground e streetwear',
       'Pronto para usar e estampar',
-      'Formatos PNG de alta resolução',
-      'Licença de uso comercial liberada'
+      'Formatos PNG de alta resolução'
     ],
     isAvailable: true,
     hotmartUrl: 'https://pay.hotmart.com/L105049950D?checkoutMode=10&bid=1774393920123',
@@ -57,20 +54,18 @@ export const packs = [
     description: 'Coleção exclusiva de estampas halftone com os maiores ícones do futebol mundial. Artes em alta resolução prontas para impressão em camisetas, pôsteres e produtos personalizados.',
     price: 'R$ 64,90',
     artCount: '+80 artes',
-    coverImage: 'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/9f5038688c5d218251487cf39b7e5123.png',
+    coverImage: '/packs/lendas-do-futebol/capa.png',
     galleryImages: [
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/9f5038688c5d218251487cf39b7e5123.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/be455ac58de0cd976e1b8a316298367b.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/3473dcb4c8c077cef7bd1830c5b1ce87.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/e9efd13227be2b3467b94918651c3a4e.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/b54ee56da0ef36d1666f5ea258e9ea7f.png'
+      '/packs/lendas-do-futebol/catalogo-1.png',
+      '/packs/lendas-do-futebol/catalogo-2.png',
+      '/packs/lendas-do-futebol/catalogo-3.png',
+      '/packs/lendas-do-futebol/catalogo-4.png'
     ],
     benefits: [
       'Alta qualidade (300 DPI)',
       'Designs exclusivos em Halftone',
       'Pronto para usar e estampar',
-      'Formatos PNG de alta resolução',
-      'Licença de uso comercial liberada'
+      'Formatos PNG de alta resolução'
     ],
     isAvailable: true,
     hotmartUrl: 'https://pay.hotmart.com/F104905288U?checkoutMode=10&bid=1774393833516',
@@ -83,20 +78,18 @@ export const packs = [
     description: 'Pack de estampas halftone inspiradas nos animes mais icônicos. Perfeito para criar produtos únicos com estética retrô e moderna ao mesmo tempo.',
     price: 'R$ 64,90',
     artCount: '+80 artes',
-    coverImage: 'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/7db4baf69a697a6856c3f1763afdb1fc.png',
+    coverImage: '/packs/anime/capa.png',
     galleryImages: [
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/7db4baf69a697a6856c3f1763afdb1fc.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/bc74bfd7157b79deb3f965ff88580934.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/bf184d056308220163ee25e463badd4b.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/51e94c98121e19141f7a5ed91045e73b.png',
-      'https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/d78cf7819ede366383024cc5fa63180c.png'
+      '/packs/anime/catalogo-1.png',
+      '/packs/anime/catalogo-2.png',
+      '/packs/anime/catalogo-3.png',
+      '/packs/anime/catalogo-4.png'
     ],
     benefits: [
       'Alta qualidade (300 DPI)',
       'Personagens clássicos e atuais',
       'Pronto para usar e estampar',
-      'Formatos PNG de alta resolução',
-      'Licença de uso comercial liberada'
+      'Formatos PNG de alta resolução'
     ],
     isAvailable: true,
     hotmartUrl: 'https://pay.hotmart.com/M102052441P?checkoutMode=10&bid=1774393879646',

@@ -50,14 +50,13 @@ const PackDetailPage = () => {
           
           <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
             {/* Info */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="w-full md:w-1/2 flex flex-col order-1">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="w-full md:w-1/2 flex flex-col order-2 md:order-1">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 uppercase tracking-tighter font-heading">
                 {pack.title}
               </h1>
               
               <div className="mb-4 md:mb-6 flex flex-wrap gap-3">
                 <span className="bg-primary text-black font-bold px-4 py-1.5 rounded-full text-sm uppercase tracking-wide inline-flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="12" r="2"/><path d="m20 17-1.296-1.296a2.41 2.41 0 0 0-3.408 0L9 22"/></svg>
                   {pack.artCount}
                 </span>
                 {!pack.isAvailable && (
@@ -67,7 +66,7 @@ const PackDetailPage = () => {
                 )}
               </div>
 
-              <p className="text-[hsl(var(--muted-foreground))] text-base md:text-lg mb-6 md:mb-10 leading-relaxed">
+              <p className="text-[hsl(var(--muted-foreground))] text-lg md:text-xl mb-10 md:mb-14 leading-relaxed">
                 {pack.description}
               </p>
 
@@ -107,7 +106,7 @@ const PackDetailPage = () => {
             </motion.div>
 
             {/* Gallery */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="w-full md:w-1/2 order-2">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="w-full md:w-1/2 order-1 md:order-2">
               <VerticalGalleryCarousel images={displayImages} title={pack.title} isAvailable={pack.isAvailable} />
             </motion.div>
           </div>

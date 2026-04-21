@@ -19,7 +19,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="https://horizons-cdn.hostinger.com/1a702cbe-827a-4ea2-8590-0cbc11eaf3a2/a645d29f3c459ac733eddfea1f4b01c1.png" 
+              src="/logo.png"
               alt="Studio Pack Logo" 
               className="h-10 w-auto object-contain"
             />
