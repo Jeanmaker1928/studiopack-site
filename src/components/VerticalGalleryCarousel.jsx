@@ -8,28 +8,22 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable }) => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-primary/20 bg-[hsl(var(--secondary)/0.2)] p-4 flex items-center justify-center group">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={prevImage}
+          aria-label="Anterior"
+          className="flex-shrink-0 text-white/30 hover:text-primary transition-colors duration-200"
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+
+        <div className="relative flex-1 aspect-square rounded-2xl overflow-hidden border-2 border-primary/20 bg-[hsl(var(--secondary)/0.2)] p-4 flex items-center justify-center">
         <img
           src={images[currentIndex]}
           alt={title}
           className={`img-standard transition-all duration-500 ${!isAvailable ? 'blur-[8px] opacity-60' : ''}`}
         />
         <div className="absolute inset-0 halftone-overlay opacity-30 pointer-events-none" />
-        
-        <button 
-          onClick={prevImage} 
-          aria-label="Anterior" 
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-primary hover:scale-110 hover:brightness-125 transition-all z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-        >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M20 24L4 12L20 0V24Z" fill="currentColor"/></svg>
-        </button>
-        <button 
-          onClick={nextImage} 
-          aria-label="Próxima" 
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-primary hover:scale-110 hover:brightness-125 transition-all z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-        >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 0L20 12L4 24V0Z" fill="currentColor"/></svg>
-        </button>
 
         {!isAvailable && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-20">
@@ -38,6 +32,15 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable }) => {
             </span>
           </div>
         )}
+        </div>
+
+        <button
+          onClick={nextImage}
+          aria-label="Próxima"
+          className="flex-shrink-0 text-white/30 hover:text-primary transition-colors duration-200"
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
       </div>
 
       <div className="flex w-full gap-2 justify-between">
