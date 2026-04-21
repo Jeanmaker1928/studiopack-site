@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Zap, Download, Shield, Clock, Search } from 'lucide-react';
+import { Zap, Download, Layers, Clock, Search } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BenefitCard from '@/components/BenefitCard';
@@ -34,7 +34,7 @@ const HomePage = () => {
   const benefits = [
     { icon: Zap, title: 'Alta resolução', description: 'Todas as artes em 300 DPI, formato A3, prontas para impressão profissional em qualquer tamanho.' },
     { icon: Download, title: 'Pronto para estampar', description: 'Arquivos otimizados em PNG e PSD editável. Basta baixar e começar a produzir seus produtos.' },
-    { icon: Shield, title: 'Uso comercial', description: 'Licença completa para uso comercial incluída. Venda seus produtos sem preocupações.' },
+    { icon: Layers, title: 'Técnica Halftone', description: 'Pontos microscópicos que simulam tons contínuos. Estampas mais leves, com melhor respirabilidade e sem aspecto emborrachado.' },
     { icon: Clock, title: 'Download imediato', description: 'Acesso instantâneo após a compra. Receba o link do Google Drive direto no seu email.' }
   ];
 
