@@ -1,25 +1,112 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const ZOOM = 6;
-const CIRCLE_RADIUS = 80; // px — raio do círculo de zoom mobile
+const CIRCLE_RADIUS = 80;
 
-const calcBgPos = (pct) => {
-  // Centraliza o ponto exato do cursor no círculo de zoom
-  return ((pct / 100 - 1 / (2 * ZOOM)) / (1 - 1 / ZOOM)) * 100;
-};
+const calcBgPos = (pct) =>
+  ((pct / 100 - 1 / (2 * ZOOM)) / (1 - 1 / ZOOM)) * 100;
+
+const HINT_STYLES = `
+  @keyframes hint-press {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    25%, 60% { transform: translateY(10px) scale(0.9); }
+  }
+  @keyframes hint-ripple {
+    0%   { transform: scale(0.4); opacity: 0.7; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+`;
+
+const ZoomHint = () => (
+  <motion.div
+    key="hint"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.4 }}
+    className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-2xl overflow-hidden md:hidden pointer-events-none"
+  >
+    <style>{HINT_STYLES}</style>
+    {/* Fundo amarelo semitransparente */}
+    <div className="absolute inset-0 bg-primary/30" />
+    {/* Retícula sobre o fundo */}
+    <div className="absolute inset-0 halftone-overlay opacity-40" />
+
+    <p className="relative z-10 text-black font-extrabold text-xs uppercase tracking-widest text-center px-4 drop-shadow-sm">
+      Segure para dar zoom
+    </p>
+
+    {/* Ícone de dedo com animação de pressionar */}
+    <div className="relative z-10 flex items-center justify-center w-16 h-16">
+      {/* Ripple 1 */}
+      <div
+        className="absolute w-10 h-10 rounded-full bg-black/25"
+        style={{ animation: 'hint-ripple 2s ease-out infinite' }}
+      />
+      {/* Ripple 2 defasado */}
+      <div
+        className="absolute w-10 h-10 rounded-full bg-black/15"
+        style={{ animation: 'hint-ripple 2s ease-out 0.7s infinite' }}
+      />
+      {/* Dedo */}
+      <div style={{ animation: 'hint-press 2s ease-in-out infinite' }}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
+          <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
+          <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+        </svg>
+      </div>
+    </div>
+  </motion.div>
+);
 
 const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onIndexChange, onHover }) => {
   const [mobileZoom, setMobileZoom] = useState(null);
+  const [showHint, setShowHint] = useState(false);
   const containerRef = useRef(null);
   const isTouchingRef = useRef(false);
+  const hasDiscoveredRef = useRef(false);
+  const hintTimersRef = useRef([]);
 
-  // Bloqueia o scroll da página enquanto o dedo estiver na imagem
+  // Bloqueia scroll ao tocar na imagem
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const block = (e) => { if (isTouchingRef.current) e.preventDefault(); };
     el.addEventListener('touchmove', block, { passive: false });
     return () => el.removeEventListener('touchmove', block);
+  }, []);
+
+  // Ciclo da dica: aguarda 2s → mostra 4s → oculta 4s → repete
+  useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('zoom-discovered')) {
+      hasDiscoveredRef.current = true;
+      return;
+    }
+
+    const clearTimers = () => {
+      hintTimersRef.current.forEach(clearTimeout);
+      hintTimersRef.current = [];
+    };
+
+    const schedule = (delay) => {
+      if (hasDiscoveredRef.current) return;
+      const t1 = setTimeout(() => {
+        if (hasDiscoveredRef.current) return;
+        setShowHint(true);
+        const t2 = setTimeout(() => {
+          setShowHint(false);
+          schedule(4000);
+        }, 4000);
+        hintTimersRef.current.push(t2);
+      }, delay);
+      hintTimersRef.current.push(t1);
+    };
+
+    schedule(2000);
+    return clearTimers;
   }, []);
 
   const nextImage = () => onIndexChange((currentIndex + 1) % images.length);
@@ -39,12 +126,9 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
     const el = containerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-
     const xPct = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
     const yPct = Math.max(0, Math.min(100, ((touch.clientY - rect.top) / rect.height) * 100));
-
     setMobileZoom({
-      // fixed position: círculo acima do dedo, pode sair do container
       clientX: touch.clientX,
       clientY: touch.clientY,
       bgX: calcBgPos(xPct),
@@ -54,6 +138,14 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
 
   const handleTouchStart = (e) => {
     isTouchingRef.current = true;
+    // Marca como descoberto e para o ciclo
+    if (!hasDiscoveredRef.current) {
+      hasDiscoveredRef.current = true;
+      localStorage.setItem('zoom-discovered', '1');
+      setShowHint(false);
+      hintTimersRef.current.forEach(clearTimeout);
+      hintTimersRef.current = [];
+    }
     updateZoom(e.touches[0]);
   };
 
@@ -90,22 +182,10 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
           />
           <div className="absolute inset-0 halftone-overlay opacity-30 pointer-events-none" />
 
-          {/* Círculo de zoom mobile — fixed no viewport, acima do dedo */}
-          {mobileZoom && (
-            <div
-              className="fixed z-50 rounded-full overflow-hidden border-4 border-primary/70 shadow-2xl pointer-events-none"
-              style={{
-                width: CIRCLE_RADIUS * 2,
-                height: CIRCLE_RADIUS * 2,
-                left: mobileZoom.clientX - CIRCLE_RADIUS,
-                top: mobileZoom.clientY - CIRCLE_RADIUS * 2 - 24,
-                backgroundImage: `url(${images[currentIndex]})`,
-                backgroundSize: `${ZOOM * 100}%`,
-                backgroundPosition: `${mobileZoom.bgX}% ${mobileZoom.bgY}%`,
-                backgroundColor: 'black',
-              }}
-            />
-          )}
+          {/* Dica de zoom — apenas mobile, some ao tocar */}
+          <AnimatePresence>
+            {showHint && <ZoomHint />}
+          </AnimatePresence>
 
           {!isAvailable && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-20">
@@ -120,6 +200,23 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>
+
+      {/* Círculo de zoom mobile — fixed no viewport, acima do dedo */}
+      {mobileZoom && (
+        <div
+          className="fixed z-50 rounded-full overflow-hidden border-4 border-primary/70 shadow-2xl pointer-events-none"
+          style={{
+            width: CIRCLE_RADIUS * 2,
+            height: CIRCLE_RADIUS * 2,
+            left: mobileZoom.clientX - CIRCLE_RADIUS,
+            top: mobileZoom.clientY - CIRCLE_RADIUS * 2 - 24,
+            backgroundImage: `url(${images[currentIndex]})`,
+            backgroundSize: `${ZOOM * 100}%`,
+            backgroundPosition: `${mobileZoom.bgX}% ${mobileZoom.bgY}%`,
+            backgroundColor: 'black',
+          }}
+        />
+      )}
 
       <div className="flex w-full gap-2 justify-between">
         {images.map((img, idx) => (
