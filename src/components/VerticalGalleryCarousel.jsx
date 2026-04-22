@@ -80,12 +80,8 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
   }, []);
 
   // Ciclo da dica: aguarda 2s → mostra 4s → oculta 4s → repete
+  // Reseta toda vez que o usuário entra na página (sem localStorage)
   useEffect(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('zoom-discovered')) {
-      hasDiscoveredRef.current = true;
-      return;
-    }
-
     const clearTimers = () => {
       hintTimersRef.current.forEach(clearTimeout);
       hintTimersRef.current = [];
@@ -141,7 +137,6 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
     // Marca como descoberto e para o ciclo
     if (!hasDiscoveredRef.current) {
       hasDiscoveredRef.current = true;
-      localStorage.setItem('zoom-discovered', '1');
       setShowHint(false);
       hintTimersRef.current.forEach(clearTimeout);
       hintTimersRef.current = [];
@@ -178,7 +173,7 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
           <img
             src={images[currentIndex]}
             alt={title}
-            className={`img-standard transition-all duration-500 ${!isAvailable ? 'blur-[8px] opacity-60' : ''}`}
+            className={`img-standard transition-all duration-500 ${!isAvailable ? 'blur-[8px] opacity-60' : ''} ${showHint ? 'blur-[3px]' : ''}`}
           />
           <div className="absolute inset-0 halftone-overlay opacity-30 pointer-events-none" />
 
