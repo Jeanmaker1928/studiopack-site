@@ -173,7 +173,7 @@ const VerticalGalleryCarousel = ({ images, title, isAvailable, currentIndex, onI
           <img
             src={images[currentIndex]}
             alt={title}
-            className={`img-standard transition-all duration-500 ${!isAvailable ? 'blur-[8px] opacity-60' : ''} ${showHint ? 'blur-[3px]' : ''}`}
+            className={`img-standard transition-all duration-500 ${!isAvailable ? 'blur-[8px] opacity-60' : ''} ${showHint ? 'blur-[3px] md:blur-0' : ''}`}
           />
           <div className="absolute inset-0 halftone-overlay opacity-30 pointer-events-none" />
 
