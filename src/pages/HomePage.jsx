@@ -77,7 +77,7 @@ const HomePage = () => {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 lg:gap-10">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 lg:gap-10">
             {displayPacks.map((pack, index) => (
               <motion.div key={pack.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.1 }} className="h-full">
                 <PackCard pack={pack} showBuyButton={true} />
