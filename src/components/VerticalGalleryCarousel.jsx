@@ -33,7 +33,8 @@ const ZoomHint = () => (
     {/* Retícula sobre o fundo */}
     <div className="absolute inset-0 halftone-overlay opacity-40" />
 
-    <p className="relative z-10 text-black font-extrabold text-xs uppercase tracking-widest text-center px-4 drop-shadow-sm">
+    <p className="relative z-10 text-white font-extrabold text-xs uppercase tracking-widest text-center px-4 font-heading"
+       style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5)' }}>
       Segure para dar zoom
     </p>
 
@@ -49,13 +50,15 @@ const ZoomHint = () => (
         className="absolute w-10 h-10 rounded-full bg-black/15"
         style={{ animation: 'hint-ripple 2s ease-out 0.7s infinite' }}
       />
-      {/* Dedo */}
+      {/* Dedo indicador levantado */}
       <div style={{ animation: 'hint-press 2s ease-in-out infinite' }}>
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
-          <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
-          <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
-          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+        <svg width="30" height="30" viewBox="0 0 64 80" fill="white" stroke="black" strokeWidth="2" strokeLinejoin="round">
+          {/* Dedo indicador */}
+          <rect x="26" y="4" width="12" height="36" rx="6" />
+          {/* Palma / mão fechada */}
+          <rect x="14" y="34" width="36" height="28" rx="10" />
+          {/* Dedos fechados (indicação visual) */}
+          <line x1="14" y1="44" x2="50" y2="44" strokeWidth="1.5" stroke="black" opacity="0.3"/>
         </svg>
       </div>
     </div>
