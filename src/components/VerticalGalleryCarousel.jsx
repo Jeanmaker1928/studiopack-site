@@ -42,17 +42,17 @@ const ZoomHint = () => (
     <div className="relative z-10 flex items-center justify-center w-16 h-16">
       {/* Ripple 1 */}
       <div
-        className="absolute w-10 h-10 rounded-full bg-black/25"
+        className="absolute w-10 h-10 rounded-full bg-white/30"
         style={{ animation: 'hint-ripple 2s ease-out infinite' }}
       />
       {/* Ripple 2 defasado */}
       <div
-        className="absolute w-10 h-10 rounded-full bg-black/15"
+        className="absolute w-10 h-10 rounded-full bg-white/20"
         style={{ animation: 'hint-ripple 2s ease-out 0.7s infinite' }}
       />
       {/* Dedo */}
       <div style={{ animation: 'hint-press 2s ease-in-out infinite' }}>
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
           <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
           <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>

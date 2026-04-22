@@ -27,10 +27,10 @@ const PackCard = ({ pack, showBuyButton = true }) => {
 
       {/* Mobile: título + preço compactos */}
       <div className="p-1.5 sm:hidden flex flex-col items-center text-center">
-        <h3 className={`text-[9px] font-bold leading-tight line-clamp-2 font-heading ${isAvailable ? 'text-white' : 'text-[hsl(var(--muted-foreground))]'}`}>
+        <h3 className={`text-[11px] font-bold leading-tight line-clamp-2 font-heading ${isAvailable ? 'text-white' : 'text-[hsl(var(--muted-foreground))]'}`}>
           {pack.title}
         </h3>
-        <span className={`text-[9px] font-bold mt-0.5 ${isAvailable ? 'text-primary' : 'text-[hsl(var(--muted-foreground))]'}`}>
+        <span className={`text-[11px] font-bold mt-0.5 ${isAvailable ? 'text-primary' : 'text-[hsl(var(--muted-foreground))]'}`}>
           {pack.price}
         </span>
       </div>
