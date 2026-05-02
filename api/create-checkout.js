@@ -36,7 +36,7 @@ export default async function handler(req, res) {
     const siteUrl = process.env.SITE_URL || 'https://studiopackhalftone.com';
 
     const session = await stripe.checkout.sessions.create({
-      ui_mode: 'embedded',
+      ui_mode: 'embedded_page',
       payment_method_types: ['card'],
       line_items: [
         {
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
       },
     });
 
-    res.status(200).json({ clientSecret: session.client_secret });
+    res.status(200).json({ url: session.url });
   } catch (err) {
     console.error('Checkout error:', err);
     res.status(500).json({ error: err.message || 'Erro ao criar checkout' });
