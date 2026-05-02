@@ -127,7 +127,7 @@ const PackDetailPage = () => {
                           className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg"
                           onClick={() => { addToCart(slug); navigate('/checkout'); }}
                         >
-                          Comprar Agora
+                          Adicionar ao Carrinho
                         </button>
                       ) : (
                         <button disabled className="w-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg cursor-not-allowed rounded-lg">
@@ -213,7 +213,7 @@ const PackDetailPage = () => {
                     className="bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all"
                     onClick={() => { addToCart(slug); navigate('/checkout'); }}
                   >
-                    Comprar Agora
+                    Adicionar ao Carrinho
                   </button>
                 </div>
               )}
