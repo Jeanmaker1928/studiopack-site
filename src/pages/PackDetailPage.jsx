@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
-import { getPackBySlug, packSpecificContent } from '@/data/PacksData';
+import { ArrowLeft, CheckCircle2, Sparkles, Zap } from 'lucide-react';
+import { getPackBySlug, packSpecificContent, packs } from '@/data/PacksData';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VerticalGalleryCarousel from '@/components/VerticalGalleryCarousel';
@@ -14,6 +14,34 @@ const PackDetailPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [bumpSlug, setBumpSlug] = useState(null);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  const otherPacks = packs.filter((p) => p.isAvailable && p.slug !== slug);
+
+  const totalPrice = bumpSlug
+    ? 'R$ 97,35'
+    : 'R$ 64,90';
+
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mainPackSlug: slug, bumpPackSlug: bumpSlug }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setIsCheckingOut(false);
+      }
+    } catch (err) {
+      console.error(err);
+      setIsCheckingOut(false);
+    }
+  };
 
   useEffect(() => {
     if (pack) window.scrollTo(0, 0);
@@ -116,15 +144,68 @@ const PackDetailPage = () => {
                     </p>
 
                     <div className="mb-2 md:mb-10 pb-6 md:pb-10 border-b border-primary/20">
-                      <div className={`text-4xl md:text-5xl font-bold mb-6 md:mb-8 font-heading ${pack.isAvailable ? 'text-primary' : 'text-[hsl(var(--muted-foreground))]'}`}>
-                        {pack.price}
+                      {/* Preço */}
+                      <div className="flex items-end gap-3 mb-5">
+                        <span className={`text-4xl md:text-5xl font-bold font-heading ${pack.isAvailable ? 'text-primary' : 'text-[hsl(var(--muted-foreground))]'}`}>
+                          {totalPrice}
+                        </span>
+                        {bumpSlug && (
+                          <span className="text-[hsl(var(--muted-foreground))] line-through text-lg mb-1">R$ 129,80</span>
+                        )}
                       </div>
+
+                      {/* Order Bump */}
+                      {pack.isAvailable && otherPacks.length > 0 && (
+                        <div className="mb-5 p-4 border-2 border-dashed border-primary/40 rounded-xl bg-primary/5">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Zap className="text-primary w-4 h-4 flex-shrink-0" />
+                            <p className="text-white font-bold text-sm">
+                              Leve mais um pack por <span className="text-primary font-black">R$ 32,45</span>
+                              <span className="ml-1.5 bg-primary text-black text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">50% OFF</span>
+                            </p>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            {otherPacks.map((p) => (
+                              <button
+                                key={p.slug}
+                                onClick={() => setBumpSlug(bumpSlug === p.slug ? null : p.slug)}
+                                className={`flex items-center gap-3 p-2.5 rounded-lg border-2 transition-all text-left ${
+                                  bumpSlug === p.slug
+                                    ? 'border-primary bg-primary/10'
+                                    : 'border-white/10 hover:border-primary/40'
+                                }`}
+                              >
+                                <img src={p.coverImage} alt={p.title} className="w-10 h-10 rounded object-cover flex-shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-white font-bold text-xs truncate">{p.title}</p>
+                                  <p className="text-primary font-bold text-xs">
+                                    R$ 32,45
+                                    <span className="line-through text-white/40 ml-1.5 font-normal">R$ 64,90</span>
+                                  </p>
+                                </div>
+                                <div className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                                  bumpSlug === p.slug ? 'border-primary bg-primary' : 'border-white/30'
+                                }`}>
+                                  {bumpSlug === p.slug && (
+                                    <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                                      <path d="M1.5 4.5l2 2 4-4" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                  )}
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Botão */}
                       {pack.isAvailable ? (
                         <button
-                          className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg"
-                          onClick={() => window.open(pack.hotmartUrl, '_blank')}
+                          className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                          onClick={handleCheckout}
+                          disabled={isCheckingOut}
                         >
-                          Comprar Agora
+                          {isCheckingOut ? 'Aguarde...' : 'Comprar Agora'}
                         </button>
                       ) : (
                         <button disabled className="w-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg cursor-not-allowed rounded-lg">
@@ -207,10 +288,11 @@ const PackDetailPage = () => {
                     Pronto para começar? Clique em Comprar abaixo.
                   </p>
                   <button
-                    className="bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all"
-                    onClick={() => window.open(pack.hotmartUrl, '_blank')}
+                    className="bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all disabled:opacity-60"
+                    onClick={handleCheckout}
+                    disabled={isCheckingOut}
                   >
-                    Comprar Agora
+                    {isCheckingOut ? 'Aguarde...' : 'Comprar Agora'}
                   </button>
                 </div>
               )}

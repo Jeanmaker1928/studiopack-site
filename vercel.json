@@ -1,5 +1,10 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+    { "source": "/((?!api/).*)", "destination": "/" }
+  ],
+  "functions": {
+    "api/webhook.js": {
+      "includeFiles": "api/pdfs/**"
+    }
+  }
 }
