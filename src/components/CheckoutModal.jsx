@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Loader2 } from 'lucide-react';
+import { X } from 'lucide-react';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const CheckoutModal = ({ packSlug, onClose }) => {
-  const [iframeUrl, setIframeUrl] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('/api/create-checkout', {
+  const fetchClientSecret = useCallback(async () => {
+    const res = await fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ packSlug }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.url) setIframeUrl(data.url);
-        else setError('Não foi possível abrir o checkout. Tente novamente.');
-      })
-      .catch(() => setError('Erro de conexão. Tente novamente.'));
+    });
+    const data = await res.json();
+    return data.clientSecret;
   }, [packSlug]);
+
+  const options = { fetchClientSecret };
 
   return (
     <AnimatePresence>
@@ -34,50 +33,18 @@ const CheckoutModal = ({ packSlug, onClose }) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.25 }}
-          className="relative w-full max-w-lg h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+          className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
         >
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 flex-shrink-0">
-            <span className="text-sm font-semibold text-gray-700">Finalizar Compra</span>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black"
+          >
+            <X className="w-4 h-4" />
+          </button>
 
-          {/* Conteúdo */}
-          <div className="flex-1 relative">
-            {!iframeUrl && !error && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
-              </div>
-            )}
-
-            {error && (
-              <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
-                <div>
-                  <p className="text-gray-600 mb-4">{error}</p>
-                  <button
-                    onClick={onClose}
-                    className="bg-black text-white px-6 py-2 rounded-lg text-sm font-medium"
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {iframeUrl && (
-              <iframe
-                src={iframeUrl}
-                className="w-full h-full border-0"
-                title="Checkout"
-                allow="payment"
-              />
-            )}
-          </div>
+          <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
+            <EmbeddedCheckout />
+          </EmbeddedCheckoutProvider>
         </motion.div>
       </motion.div>
     </AnimatePresence>
