@@ -9,8 +9,8 @@ const PACK_NAMES = {
   'anime': 'Anime Pack',
 };
 
-const PRICE_FULL = 6490;  // R$ 64,90 — primeiro pack
-const PRICE_BUMP = 3245;  // R$ 32,45 — demais packs (50% off)
+const PRICE_FULL = 6490;  // R$ 64,90
+const PRICE_BUMP = 3245;  // R$ 32,45 (50% off)
 
 const getRawBody = (req) =>
   new Promise((resolve, reject) => {
@@ -27,47 +27,38 @@ export default async function handler(req, res) {
 
   try {
     const rawBody = await getRawBody(req);
-    const { cartItems } = JSON.parse(rawBody);
+    const { packSlug } = JSON.parse(rawBody);
 
-    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
-      return res.status(400).json({ error: 'Carrinho vazio' });
+    if (!packSlug || !PACK_NAMES[packSlug]) {
+      return res.status(400).json({ error: 'Pack inválido' });
     }
-
-    const validItems = cartItems.filter((slug) => PACK_NAMES[slug]);
-    if (validItems.length === 0) {
-      return res.status(400).json({ error: 'Nenhum pack válido' });
-    }
-
-    // Primeiro pack: preço cheio. Demais: 50% off.
-    const lineItems = validItems.map((slug, index) => ({
-      price_data: {
-        currency: 'brl',
-        product_data: {
-          name: index === 0
-            ? PACK_NAMES[slug]
-            : `${PACK_NAMES[slug]} – 50% OFF`,
-          description: 'Studio Pack – Estampas Halftone em alta resolução',
-        },
-        unit_amount: index === 0 ? PRICE_FULL : PRICE_BUMP,
-      },
-      quantity: 1,
-    }));
 
     const siteUrl = process.env.SITE_URL || 'https://studiopackhalftone.com';
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card', 'boleto'],
-      line_items: lineItems,
+      ui_mode: 'embedded',
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'brl',
+            product_data: {
+              name: PACK_NAMES[packSlug],
+              description: 'Studio Pack – Estampas Halftone em alta resolução',
+            },
+            unit_amount: PRICE_FULL,
+          },
+          quantity: 1,
+        },
+      ],
       mode: 'payment',
-      success_url: `${siteUrl}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/packs`,
+      return_url: `${siteUrl}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
-        cartItems: JSON.stringify(validItems),
+        cartItems: JSON.stringify([packSlug]),
       },
-      locale: 'pt-BR',
     });
 
-    res.status(200).json({ url: session.url });
+    res.status(200).json({ clientSecret: session.client_secret });
   } catch (err) {
     console.error('Checkout error:', err);
     res.status(500).json({ error: 'Erro ao criar checkout' });

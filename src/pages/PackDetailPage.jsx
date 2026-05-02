@@ -6,6 +6,7 @@ import { getPackBySlug, packSpecificContent } from '@/data/PacksData';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VerticalGalleryCarousel from '@/components/VerticalGalleryCarousel';
+import CheckoutModal from '@/components/CheckoutModal';
 
 const PackDetailPage = () => {
   const { slug } = useParams();
@@ -14,6 +15,7 @@ const PackDetailPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [showCheckout, setShowCheckout] = useState(false);
 
   useEffect(() => {
     if (pack) window.scrollTo(0, 0);
@@ -122,7 +124,7 @@ const PackDetailPage = () => {
                       {pack.isAvailable ? (
                         <button
                           className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg"
-                          onClick={() => window.open(pack.hotmartUrl, '_blank')}
+                          onClick={() => setShowCheckout(true)}
                         >
                           Comprar Agora
                         </button>
@@ -208,7 +210,7 @@ const PackDetailPage = () => {
                   </p>
                   <button
                     className="bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all"
-                    onClick={() => window.open(pack.hotmartUrl, '_blank')}
+                    onClick={() => setShowCheckout(true)}
                   >
                     Comprar Agora
                   </button>
@@ -220,6 +222,13 @@ const PackDetailPage = () => {
       </main>
 
       <Footer />
+
+      {showCheckout && (
+        <CheckoutModal
+          packSlug={slug}
+          onClose={() => setShowCheckout(false)}
+        />
+      )}
     </div>
   );
 };
