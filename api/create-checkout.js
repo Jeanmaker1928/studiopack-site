@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'embedded_page',
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'boleto'],
       line_items: [
         {
           price_data: {
@@ -52,6 +52,8 @@ export default async function handler(req, res) {
         },
       ],
       mode: 'payment',
+      billing_address_collection: 'required',
+      phone_number_collection: { enabled: false },
       return_url: `${siteUrl}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
         cartItems: JSON.stringify([packSlug]),

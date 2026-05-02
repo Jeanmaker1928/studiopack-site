@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
 import { getPackBySlug, packSpecificContent } from '@/data/PacksData';
@@ -9,6 +9,7 @@ import VerticalGalleryCarousel from '@/components/VerticalGalleryCarousel';
 
 const PackDetailPage = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const pack = getPackBySlug(slug);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -122,7 +123,7 @@ const PackDetailPage = () => {
                       {pack.isAvailable ? (
                         <button
                           className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg"
-                          onClick={() => window.open(pack.hotmartUrl, '_blank')}
+                          onClick={() => navigate(`/checkout?pack=${slug}`)}
                         >
                           Comprar Agora
                         </button>
@@ -208,7 +209,7 @@ const PackDetailPage = () => {
                   </p>
                   <button
                     className="bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all"
-                    onClick={() => window.open(pack.hotmartUrl, '_blank')}
+                    onClick={() => navigate(`/checkout?pack=${slug}`)}
                   >
                     Comprar Agora
                   </button>
