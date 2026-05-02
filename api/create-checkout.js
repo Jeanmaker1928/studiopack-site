@@ -61,6 +61,6 @@ export default async function handler(req, res) {
     res.status(200).json({ clientSecret: session.client_secret });
   } catch (err) {
     console.error('Checkout error:', err);
-    res.status(500).json({ error: 'Erro ao criar checkout' });
+    res.status(500).json({ error: err.message || 'Erro ao criar checkout' });
   }
 }
