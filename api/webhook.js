@@ -112,17 +112,16 @@ export default async function handler(req, res) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const customerEmail = session.customer_details?.email;
-    const { mainPackSlug, bumpPackSlug } = session.metadata;
+    const { cartItems } = session.metadata;
 
     if (!customerEmail) {
       console.error('No customer email found in session');
       return res.status(200).json({ received: true });
     }
 
-    const packsToSend = [mainPackSlug];
-    if (bumpPackSlug && PDF_MAP[bumpPackSlug]) {
-      packsToSend.push(bumpPackSlug);
-    }
+    let parsedItems = [];
+    try { parsedItems = JSON.parse(cartItems || '[]'); } catch { parsedItems = []; }
+    const packsToSend = parsedItems.filter((slug) => PDF_MAP[slug]);
 
     try {
       await sendEmail(customerEmail, packsToSend);

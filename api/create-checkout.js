@@ -9,8 +9,8 @@ const PACK_NAMES = {
   'anime': 'Anime Pack',
 };
 
-const PRICE_CENTS = 6490;      // R$ 64,90
-const BUMP_PRICE_CENTS = 3245; // R$ 32,45
+const PRICE_FULL = 6490;  // R$ 64,90 — primeiro pack
+const PRICE_BUMP = 3245;  // R$ 32,45 — demais packs (50% off)
 
 const getRawBody = (req) =>
   new Promise((resolve, reject) => {
@@ -27,39 +27,31 @@ export default async function handler(req, res) {
 
   try {
     const rawBody = await getRawBody(req);
-    const { mainPackSlug, bumpPackSlug } = JSON.parse(rawBody);
+    const { cartItems } = JSON.parse(rawBody);
 
-    if (!mainPackSlug || !PACK_NAMES[mainPackSlug]) {
-      return res.status(400).json({ error: 'Pack inválido' });
+    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+      return res.status(400).json({ error: 'Carrinho vazio' });
     }
 
-    const lineItems = [
-      {
-        price_data: {
-          currency: 'brl',
-          product_data: {
-            name: PACK_NAMES[mainPackSlug],
-            description: 'Studio Pack – Estampas Halftone em alta resolução',
-          },
-          unit_amount: PRICE_CENTS,
+    const validItems = cartItems.filter((slug) => PACK_NAMES[slug]);
+    if (validItems.length === 0) {
+      return res.status(400).json({ error: 'Nenhum pack válido' });
+    }
+
+    // Primeiro pack: preço cheio. Demais: 50% off.
+    const lineItems = validItems.map((slug, index) => ({
+      price_data: {
+        currency: 'brl',
+        product_data: {
+          name: index === 0
+            ? PACK_NAMES[slug]
+            : `${PACK_NAMES[slug]} – 50% OFF`,
+          description: 'Studio Pack – Estampas Halftone em alta resolução',
         },
-        quantity: 1,
+        unit_amount: index === 0 ? PRICE_FULL : PRICE_BUMP,
       },
-    ];
-
-    if (bumpPackSlug && PACK_NAMES[bumpPackSlug] && bumpPackSlug !== mainPackSlug) {
-      lineItems.push({
-        price_data: {
-          currency: 'brl',
-          product_data: {
-            name: `${PACK_NAMES[bumpPackSlug]} – 50% OFF`,
-            description: 'Oferta especial Studio Pack',
-          },
-          unit_amount: BUMP_PRICE_CENTS,
-        },
-        quantity: 1,
-      });
-    }
+      quantity: 1,
+    }));
 
     const siteUrl = process.env.SITE_URL || 'https://studiopackhalftone.com';
 
@@ -68,10 +60,9 @@ export default async function handler(req, res) {
       line_items: lineItems,
       mode: 'payment',
       success_url: `${siteUrl}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/pack/${mainPackSlug}`,
+      cancel_url: `${siteUrl}/packs`,
       metadata: {
-        mainPackSlug,
-        bumpPackSlug: bumpPackSlug || '',
+        cartItems: JSON.stringify(validItems),
       },
       locale: 'pt-BR',
     });
