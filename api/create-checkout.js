@@ -58,7 +58,7 @@ export default async function handler(req, res) {
       },
     });
 
-    res.status(200).json({ url: session.url });
+    res.status(200).json({ url: session.url, id: session.id, ui_mode: session.ui_mode, keys: Object.keys(session) });
   } catch (err) {
     console.error('Checkout error:', err);
     res.status(500).json({ error: err.message || 'Erro ao criar checkout' });
