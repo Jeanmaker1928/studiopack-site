@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
   try {
     const rawBody = await getRawBody(req);
-    const { items } = JSON.parse(rawBody);
+    const { items, promotionCodeId } = JSON.parse(rawBody);
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Carrinho vazio' });
@@ -58,8 +58,11 @@ export default async function handler(req, res) {
       payment_method_types: ['card', 'boleto'],
       line_items,
       mode: 'payment',
-      allow_promotion_codes: true,
       billing_address_collection: 'required',
+      ...(promotionCodeId
+        ? { discounts: [{ promotion_code: promotionCodeId }] }
+        : { allow_promotion_codes: true }
+      ),
       return_url: `${siteUrl}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
         cartItems: JSON.stringify(items.map(i => i.slug)),
