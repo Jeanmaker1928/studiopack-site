@@ -1,59 +1,41 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const CartContext = createContext();
 
-const PRICE_FULL = 6490;  // R$ 64,90
-const PRICE_BUMP = 3245;  // R$ 32,45
+export const PRICE_FULL = 6490;  // R$ 64,90
+export const PRICE_BUMP = 3245;  // R$ 32,45
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('sp-cart')) || []; }
-    catch { return []; }
-  });
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('sp-cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+  const [mainSlug, setMainSlug] = useState(null);
+  const [bumpSlug, setBumpSlug] = useState(null);
 
   const addToCart = (slug) => {
-    if (!cartItems.includes(slug)) {
-      setCartItems((prev) => [...prev, slug]);
-    }
-    setIsCartOpen(true);
+    setMainSlug(slug);
+    setBumpSlug(null);
   };
 
-  const removeFromCart = (slug) => {
-    setCartItems((prev) => prev.filter((s) => s !== slug));
-  };
+  const selectOrderBump = (slug) => setBumpSlug(slug);
+  const removeOrderBump = () => setBumpSlug(null);
+  const clearCart = () => { setMainSlug(null); setBumpSlug(null); };
 
-  const clearCart = () => setCartItems([]);
+  const items = [
+    ...(mainSlug ? [{ slug: mainSlug, price: PRICE_FULL }] : []),
+    ...(bumpSlug ? [{ slug: bumpSlug, price: PRICE_BUMP }] : []),
+  ];
 
-  // Primeiro pack preço cheio, demais 50% off
-  const getItemPrice = (index) => (index === 0 ? PRICE_FULL : PRICE_BUMP);
-
-  const getTotal = () =>
-    cartItems.reduce((sum, _, i) => sum + getItemPrice(i), 0);
+  const total = items.reduce((sum, i) => sum + i.price, 0);
+  const count = items.length;
 
   const formatBRL = (cents) =>
-    `R$ ${(cents / 100).toFixed(2).replace('.', ',')}`;
+    (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addToCart,
-        removeFromCart,
-        clearCart,
-        isCartOpen,
-        setIsCartOpen,
-        getTotal,
-        getItemPrice,
-        formatBRL,
-        PRICE_FULL,
-        PRICE_BUMP,
-      }}
-    >
+    <CartContext.Provider value={{
+      mainSlug, bumpSlug,
+      items, total, count,
+      addToCart, selectOrderBump, removeOrderBump, clearCart,
+      formatBRL, PRICE_FULL, PRICE_BUMP,
+    }}>
       {children}
     </CartContext.Provider>
   );

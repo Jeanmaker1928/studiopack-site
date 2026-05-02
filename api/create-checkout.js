@@ -27,36 +27,42 @@ export default async function handler(req, res) {
 
   try {
     const rawBody = await getRawBody(req);
-    const { packSlug } = JSON.parse(rawBody);
+    const { items } = JSON.parse(rawBody);
 
-    if (!packSlug || !PACK_NAMES[packSlug]) {
-      return res.status(400).json({ error: 'Pack inválido' });
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'Carrinho vazio' });
+    }
+
+    for (const item of items) {
+      if (!item.slug || !PACK_NAMES[item.slug]) {
+        return res.status(400).json({ error: `Pack inválido: ${item.slug}` });
+      }
     }
 
     const siteUrl = process.env.SITE_URL || 'https://studiopackhalftone.com';
 
+    const line_items = items.map(item => ({
+      price_data: {
+        currency: 'brl',
+        product_data: {
+          name: PACK_NAMES[item.slug],
+          description: 'Studio Pack – Estampas Halftone em alta resolução',
+        },
+        unit_amount: item.price,
+      },
+      quantity: 1,
+    }));
+
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'embedded_page',
       payment_method_types: ['card', 'boleto'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'brl',
-            product_data: {
-              name: PACK_NAMES[packSlug],
-              description: 'Studio Pack – Estampas Halftone em alta resolução',
-            },
-            unit_amount: PRICE_FULL,
-          },
-          quantity: 1,
-        },
-      ],
+      line_items,
       mode: 'payment',
+      allow_promotion_codes: true,
       billing_address_collection: 'required',
-      phone_number_collection: { enabled: false },
       return_url: `${siteUrl}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
-        cartItems: JSON.stringify([packSlug]),
+        cartItems: JSON.stringify(items.map(i => i.slug)),
       },
     });
 
