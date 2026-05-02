@@ -1,11 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '@/context/CartContext';
 
 const PackCard = ({ pack, showBuyButton = true }) => {
   const isAvailable = pack.isAvailable;
-  const { addToCart, cartItems } = useCart();
-  const inCart = cartItems.includes(pack.slug);
 
   const CardInner = () => (
     <>
@@ -60,15 +57,8 @@ const PackCard = ({ pack, showBuyButton = true }) => {
           </span>
         </div>
         {showBuyButton && isAvailable && (
-          <button
-            onClick={(e) => { e.preventDefault(); addToCart(pack.slug); }}
-            className={`w-full font-bold uppercase tracking-widest transition-all duration-300 py-3 rounded-lg text-sm ${
-              inCart
-                ? 'bg-primary/20 text-primary border border-primary/50'
-                : 'bg-primary text-black hover:bg-primary/90'
-            }`}
-          >
-            {inCart ? '✓ No Carrinho' : 'Adicionar'}
+          <button className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest transition-all duration-300 py-3 rounded-lg text-sm">
+            Ver Detalhes
           </button>
         )}
       </div>

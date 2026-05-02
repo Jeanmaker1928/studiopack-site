@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { cartItems, setIsCartOpen } = useCart();
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -44,20 +41,6 @@ const Header = () => {
               </Link>
             ))}
           </nav>
-
-          {/* Cart button */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="relative p-2 text-white hover:text-primary transition-colors"
-            aria-label="Carrinho"
-          >
-            <ShoppingCart className="w-6 h-6" />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-primary text-black text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center leading-none">
-                {cartItems.length}
-              </span>
-            )}
-          </button>
 
           <button
             className="md:hidden p-2 text-white hover:text-primary transition-colors"

@@ -1,19 +1,15 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle2, Sparkles, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
 import { getPackBySlug, packSpecificContent } from '@/data/PacksData';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VerticalGalleryCarousel from '@/components/VerticalGalleryCarousel';
-import { useCart } from '@/context/CartContext';
 
 const PackDetailPage = () => {
   const { slug } = useParams();
   const pack = getPackBySlug(slug);
-  const { addToCart, cartItems } = useCart();
-  const inCart = cartItems.includes(slug);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -125,15 +121,10 @@ const PackDetailPage = () => {
                       </div>
                       {pack.isAvailable ? (
                         <button
-                          className={`w-full font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 rounded-lg flex items-center justify-center gap-2 ${
-                            inCart
-                              ? 'bg-primary/15 text-primary border-2 border-primary/50 hover:bg-primary/25'
-                              : 'bg-primary text-black hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20'
-                          }`}
-                          onClick={() => addToCart(slug)}
+                          className="w-full bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 rounded-lg"
+                          onClick={() => window.open(pack.hotmartUrl, '_blank')}
                         >
-                          <ShoppingCart className="w-5 h-5" />
-                          {inCart ? 'Adicionado ao Carrinho' : 'Adicionar ao Carrinho'}
+                          Comprar Agora
                         </button>
                       ) : (
                         <button disabled className="w-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] font-bold uppercase tracking-widest py-4 md:py-5 text-base md:text-lg cursor-not-allowed rounded-lg">
@@ -216,15 +207,10 @@ const PackDetailPage = () => {
                     Pronto para começar? Clique em Comprar abaixo.
                   </p>
                   <button
-                    className={`font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all flex items-center justify-center gap-2 ${
-                      inCart
-                        ? 'bg-primary/15 text-primary border-2 border-primary/50 hover:bg-primary/25'
-                        : 'bg-primary text-black hover:bg-primary/90'
-                    }`}
-                    onClick={() => addToCart(slug)}
+                    className="bg-primary text-black hover:bg-primary/90 font-bold uppercase tracking-widest px-6 md:px-8 py-4 w-full sm:w-auto rounded-lg transition-all"
+                    onClick={() => window.open(pack.hotmartUrl, '_blank')}
                   >
-                    <ShoppingCart className="w-4 h-4" />
-                    {inCart ? 'Adicionado' : 'Adicionar ao Carrinho'}
+                    Comprar Agora
                   </button>
                 </div>
               )}
