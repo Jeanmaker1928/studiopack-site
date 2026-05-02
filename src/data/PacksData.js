@@ -2,7 +2,7 @@ export const packs = [
   {
     id: 'lendas-do-basquete',
     slug: 'lendas-do-basquete',
-    title: 'LENDAS DO BASQUETE',
+    title: 'Lendas do Basquete',
     description: 'Pack de estampas halftone com as maiores lendas do basquete. Artes com atitude e estilo para marcas de streetwear e produtos com pegada underground.',
     price: 'R$ 64,90',
     artCount: '+80 artes',

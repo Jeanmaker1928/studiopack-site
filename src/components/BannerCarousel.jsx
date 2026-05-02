@@ -5,7 +5,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 const banners = [
   {
     id: 1,
-    title: 'LENDAS DO BASQUETE',
+    title: 'Lendas do Basquete',
     subtitle: '+80 IMAGENS - R$64,90',
     image: '/banners/banner-basquete.png',
     overlay: 'bg-black/85',
