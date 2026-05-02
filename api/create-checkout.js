@@ -56,7 +56,12 @@ export default async function handler(req, res) {
     const siteUrl = process.env.SITE_URL || 'https://studiopackhalftone.com';
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'pix'],
+      payment_method_options: {
+        pix: {
+          expires_after_seconds: 3600, // Pix expira em 1 hora
+        },
+      },
       line_items: lineItems,
       mode: 'payment',
       success_url: `${siteUrl}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
